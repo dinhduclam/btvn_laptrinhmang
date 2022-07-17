@@ -71,11 +71,32 @@ int main()
         printf("%s\n", buf);
         ProcessQuery(buf);
         
-        std::string res = param_map["param1"] + " + " + param_map["param2"] + " = ";
+        
         
         if (param_map["param1"] != "" && param_map["param2"] != "") {
+            std::string res;
+            int sum = 0;
 
-            int sum = stoi(param_map["param1"]) + stoi(param_map["param2"]);
+            if (param_map["op"] == "add") {
+                sum = stoi(param_map["param1"]) + stoi(param_map["param2"]);
+                res = param_map["param1"] +  " + " + param_map["param2"] + " = ";
+            }
+                
+            else if (param_map["op"] == "sub") {
+                sum = stoi(param_map["param1"]) - stoi(param_map["param2"]);
+                res = param_map["param1"] + " - " + param_map["param2"] + " = ";
+            }
+            else if (param_map["op"] == "mul") {
+                sum = stoi(param_map["param1"]) * stoi(param_map["param2"]);
+                res = param_map["param1"] + " * " + param_map["param2"] + " = ";
+            }
+            else if (param_map["op"] == "div") {
+                sum = stoi(param_map["param1"]) / stoi(param_map["param2"]);
+                res = param_map["param1"] + " / " + param_map["param2"] + " = ";
+            }
+            else {
+                continue;
+            }
 
             res += std::to_string(sum);
 
