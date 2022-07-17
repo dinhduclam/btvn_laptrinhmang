@@ -9,16 +9,17 @@ std::map<std::string, std::string> param_map;
 
 void ProcessQuery(char* req)
 {
-    char* p1 = strstr(req, "?");
+    char* p1 = strstr(req, " ");
     char* p2 = strstr(p1+1, " ");
 
-    int paramLength = p2 - (p1 + 1);
+    char* query_string = p1 + 1;
+    *p2 = 0;
 
-    char* query = (char*)malloc(paramLength + 1);
-    memcpy(query, p1 + 1, paramLength);
-    query[paramLength] = 0;
+    char* question_mark = strstr(query_string, "?");
 
-    char* param = strtok(query, "&");
+    if (question_mark == NULL) return;
+
+    char* param = strtok(question_mark + 1, "&");
     while (param != NULL)
     {
         char* p = strstr(param, "=");
@@ -69,13 +70,22 @@ int main()
             buf[ret] = 0;
         printf("%s\n", buf);
         ProcessQuery(buf);
-        printf("%s\n", param_map["param2"]);
         
-        const char* response = param_map["param1"].c_str();
+        std::string res = param_map["param1"] + " + " + param_map["param2"] + " = ";
+        
+        if (param_map["param1"] != "" && param_map["param2"] != "") {
 
-        const char* header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-        send(client, header, strlen(header), 0);
-        send(client, response, 2, 0);
+            int sum = stoi(param_map["param1"]) + stoi(param_map["param2"]);
+
+            res += std::to_string(sum);
+
+            const char* response = res.c_str();
+
+            const char* header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
+            send(client, header, strlen(header), 0);
+            send(client, response, strlen(response), 0);
+        }
+        
 
         param_map.clear();
         // Tra lai ket qua
